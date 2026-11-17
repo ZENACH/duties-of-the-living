@@ -25,6 +25,9 @@
   <button class="tab" data-view="planner" role="tab">🗓️ Planner</button>
   <button class="tab" data-view="money" role="tab">💰 Money</button>
   <button class="tab" data-view="grades" role="tab">🎓 Grades</button>
+  <button class="tab" data-view="aid" role="tab">🏛️ Aid</button>
+  <button class="tab" data-view="transit" role="tab">🚌 Transit</button>
+  <button class="tab" data-view="docs" role="tab">🪪 Docs</button>
 </nav>
 
 <main>
@@ -49,6 +52,10 @@
         <h3>🎓 Grades snapshot</h3>
         <div id="grades-snapshot"></div>
       </div>
+      <div class="card" id="today-docs-card" style="display:none">
+        <h3>🪪 Documents watch</h3>
+        <div id="docs-snapshot"></div>
+      </div>
     </div>
   </section>
 
@@ -65,6 +72,7 @@
             <option value="assignment">📝 Assignment</option>
             <option value="exam">🧪 Exam</option>
             <option value="class">🏫 Class</option>
+            <option value="deadline">📌 Key date</option>
             <option value="task">✅ Task</option>
           </select>
         </label>
@@ -79,6 +87,12 @@
         </label>
         <button type="submit" class="btn primary">Add</button>
       </form>
+    </div>
+
+    <div class="card">
+      <h2>📌 Concordia — Winter 2027 key dates</h2>
+      <p class="muted">Official dates from Concordia's academic calendar. Tap "Add" to put any of them in your planner.</p>
+      <ul id="key-dates" class="item-list"></ul>
     </div>
 
     <div class="card">
@@ -191,6 +205,135 @@
 
     <div id="course-list"></div>
     <p id="grades-empty" class="muted card">No courses yet. Add one above, then add its graded pieces (assignments, midterms, final) with their weights.</p>
+  </section>
+
+  <!-- ============ AID ============ -->
+  <section id="view-aid" class="view">
+    <div class="card">
+      <h2>🏛️ Your student aid</h2>
+      <label class="stack">Your program
+        <select id="a-program">
+          <option value="AFE">AFE — Québec (Aide financière aux études)</option>
+          <option value="OSAP">OSAP — Ontario</option>
+          <option value="StudentAid BC">StudentAid BC — British Columbia</option>
+          <option value="Alberta Student Aid">Alberta Student Aid</option>
+          <option value="Manitoba Student Aid">Manitoba Student Aid</option>
+          <option value="NS Student Assistance">Nova Scotia Student Assistance</option>
+          <option value="Other">Other province / territory</option>
+        </select>
+      </label>
+      <p id="a-program-info" class="muted"></p>
+      <p class="muted">DTL never connects to your aid account — government portals stay between you and the government. You track the dates and amounts here; the app watches the calendar for you.</p>
+    </div>
+
+    <div class="card">
+      <h2>Add an aid date</h2>
+      <form id="aid-form" class="form-grid">
+        <label>Kind
+          <select id="a-kind">
+            <option value="payment">💵 Payment expected</option>
+            <option value="deadline">⏰ Application / renewal deadline</option>
+            <option value="document">📄 Document requested</option>
+            <option value="other">📌 Other</option>
+          </select>
+        </label>
+        <label>Label
+          <input type="text" id="a-label" required placeholder="e.g. Winter payment — January instalment">
+        </label>
+        <label>Date
+          <input type="date" id="a-date" required>
+        </label>
+        <label>Amount (CAD, optional)
+          <input type="number" id="a-amount" min="0" step="0.01" placeholder="0.00">
+        </label>
+        <button type="submit" class="btn primary">Add</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Upcoming aid dates</h2>
+      <ul id="aid-list" class="item-list"></ul>
+      <p id="aid-empty" class="muted">Nothing tracked yet. Add your next payment or deadline above.</p>
+    </div>
+
+    <div class="card">
+      <h2>🧾 Tax season checklist</h2>
+      <p class="muted">For the 2026 tax year — slips usually appear in late February, and the personal filing deadline is <b>April 30, 2027</b>. Check these off as your slips arrive:</p>
+      <ul class="clean-list" id="tax-list">
+        <li><label class="inline-check"><input type="checkbox" data-tax="t2202"> T2202 — tuition slip from your university</label></li>
+        <li><label class="inline-check"><input type="checkbox" data-tax="releve8"> Relevé 8 — Québec tuition slip (if you study in Québec)</label></li>
+        <li><label class="inline-check"><input type="checkbox" data-tax="t4"> T4 — if you worked a job</label></li>
+        <li><label class="inline-check"><input type="checkbox" data-tax="receipts"> Other receipts — transit passes, medical, donations</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ TRANSIT ============ -->
+  <section id="view-transit" class="view">
+    <div class="card hero">
+      <h2>🚌 Concordia shuttle — LOY ↔ SGW</h2>
+      <p id="shuttle-status" class="muted">Loading the official timetable…</p>
+      <p class="muted">Free with your Concordia ID. Ride is about 30 minutes. Times are Concordia's official schedule — they're approximate, and a bus can leave early once it's full, so be at the stop a few minutes ahead.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>LOY → SGW (downtown)</h3>
+        <p class="big-number" id="next-loy">—</p>
+        <p id="next-loy-note" class="muted"></p>
+        <div id="chips-loy" class="chips"></div>
+      </div>
+      <div class="card">
+        <h3>SGW → LOY</h3>
+        <p class="big-number" id="next-sgw">—</p>
+        <p id="next-sgw-note" class="muted"></p>
+        <div id="chips-sgw" class="chips"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🚇 Plan B — STM</h2>
+      <p>When the shuttle isn't running (early mornings, evenings after the last bus, weekends), STM connects the campuses:</p>
+      <ul class="clean-list">
+        <li><b>105 Sherbrooke</b> bus — from Vendôme metro to Loyola</li>
+        <li><b>162 Westminster</b> bus — from Villa-Maria metro to Loyola</li>
+        <li><b>51 Édouard-Montpetit</b> bus — from Snowdon metro to Loyola</li>
+      </ul>
+      <p class="muted">Live STM times need STM's free developer key — that hookup is on the roadmap. For now, check live departures on <a href="https://www.stm.info/" target="_blank" rel="noopener">stm.info</a>. Shuttle source: <a href="https://www.concordia.ca/maps/shuttle-bus.html" target="_blank" rel="noopener">Concordia's official shuttle page</a>.</p>
+    </div>
+  </section>
+
+  <!-- ============ DOCS ============ -->
+  <section id="view-docs" class="view">
+    <div class="card">
+      <h2>Add a document</h2>
+      <form id="doc-form" class="form-grid">
+        <label>Type
+          <select id="d-type">
+            <option>Student ID</option>
+            <option>Health card</option>
+            <option>Study permit</option>
+            <option>Passport</option>
+            <option>Driver's licence</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label>Name / note (optional)
+          <input type="text" id="d-name" placeholder="e.g. RAMQ card">
+        </label>
+        <label>Expiry date
+          <input type="date" id="d-expiry" required>
+        </label>
+        <button type="submit" class="btn primary">Add</button>
+      </form>
+      <p class="muted">Only the expiry lives here — never photograph or type card numbers into any app, including this one.</p>
+    </div>
+
+    <div class="card">
+      <h2>Your documents</h2>
+      <ul id="doc-list" class="item-list"></ul>
+      <p id="doc-empty" class="muted">No documents tracked yet.</p>
+    </div>
   </section>
 
 </main>

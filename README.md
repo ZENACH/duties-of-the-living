@@ -4,18 +4,26 @@
 
 Canadian university students already live on their phones — but their student life is scattered across a dozen apps: a calendar here, a notes app there, a banking app, a GPA calculator website, a transit app. **Duties of the Living** puts it all in one place, built specifically for Canadian university students.
 
-## Phase 1 (current)
+## Phase 1
 
 - **🏠 Today dashboard** — your day at a glance: what's due, what's overdue, money in/out this month, and your current GPA.
 - **🗓️ Planner** — classes, assignments, exams, and tasks with due dates, countdowns, and overdue flags.
 - **💰 Money** — income & expense tracking by category, a monthly budget with a live progress bar, and a savings goal tracker (e.g. a 6-month emergency fund).
 - **🎓 Grades & GPA** — courses with weighted assessments (assignments, midterms, final), current grade and letter on the **official Concordia 4.3 scale**, credit-weighted GPA, and a *"what do I need on the rest to finish with an A?"* calculator.
 
+## Phase 2 (current)
+
+- **📌 Term key dates** — Concordia Winter 2027 dates (tuition due, classes begin, add/DNE deadline, last day to pay, DISC deadline, AFE funding end) built into the Planner, addable in one tap. Source: Concordia's official academic calendar.
+- **🏛️ Student aid tracker** — pick your program (AFE Québec, OSAP, StudentAid BC, Alberta, Manitoba, Nova Scotia, other) and track payments, deadlines, and document requests. DTL never connects to your government aid account; you log the dates, the app watches them.
+- **🧾 Tax season checklist** — T2202, Relevé 8 (Québec), T4, and receipts, with the April 30 filing deadline in view.
+- **🚌 Transit** — the full official Concordia shuttle timetable (fall, exam-period, and winter tables, verified against concordia.ca) with next-bus countdowns for both directions, "be at the stop by" times, and arrival estimates — plus an STM plan-B card for when the shuttle isn't running.
+- **🪪 Documents** — expiry tracking for student ID, health card, study permit, passport, and more, with warnings at 90/30 days and on the Today dashboard. Expiry dates only — never card numbers.
+
 All data is stored locally in the browser (localStorage). No account, no server, no tracking.
 
 ## Roadmap
 
-- **Phase 2** — Canadian student aid tracker (AFE in Québec, OSAP in Ontario, other provinces), important term dates (add/drop, reading week), transit (Concordia shuttle timetable + live STM GTFS-Realtime predictions), document expiry reminders (student ID, health card, study permit), T2202 / Relevé 8 tax-season reminders.
+- **Phase 2.5** — live STM predictions via STM's free GTFS-Realtime developer feed (needs a free STM API key and a small proxy so the key isn't exposed in client code).
 - **Phase 3** — English/French bilingual UI, study tools (Pomodoro timer, flashcards), sharing and polish.
 
 ## Run it
