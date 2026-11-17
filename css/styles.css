@@ -1,0 +1,203 @@
+/* Duties of the Living (DTL) — Phase 1 styles
+   Dark, game-inspired theme. Mobile-first. */
+
+:root {
+  --bg: #12141c;
+  --surface: #1c1f2b;
+  --surface-2: #262a3a;
+  --border: #333850;
+  --text: #eef0f8;
+  --muted: #9aa1b8;
+  --accent: #f5a524;      /* warm amber — the "living" glow */
+  --accent-2: #7c5cff;    /* violet for goals/progress */
+  --good: #3ecf8e;
+  --bad: #f5564b;
+  --warn: #f5a524;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+}
+
+/* ---------- header & nav ---------- */
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  padding: 1.25rem 1.25rem 0.75rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.brand { display: flex; gap: 0.75rem; align-items: center; }
+.brand-icon { font-size: 2.2rem; }
+.brand h1 { font-size: 1.35rem; margin: 0; letter-spacing: 0.2px; }
+.tagline { margin: 0; color: var(--muted); font-size: 0.85rem; }
+.today-date { color: var(--muted); font-size: 0.9rem; margin: 0; text-align: right; }
+
+.tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+  overflow-x: auto;
+}
+
+.tab {
+  flex: 1;
+  min-width: max-content;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.tab.active { background: var(--accent); border-color: var(--accent); color: #1a1206; font-weight: 700; }
+
+/* ---------- layout ---------- */
+
+main { max-width: 960px; margin: 0 auto; padding: 0 1.25rem 2rem; }
+.view { display: none; }
+.view.active { display: block; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+}
+.card h2 { margin: 0 0 0.75rem; font-size: 1.1rem; }
+.card h3 { margin: 0 0 0.6rem; font-size: 1rem; }
+.card.hero { border-color: var(--accent); }
+
+.muted { color: var(--muted); }
+.big-number { font-size: 2.6rem; font-weight: 800; margin: 0.25rem 0; color: var(--accent); }
+
+.row-between { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.inline-check { font-size: 0.85rem; color: var(--muted); }
+
+/* ---------- forms ---------- */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+}
+label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; color: var(--muted); }
+label.stack { margin-bottom: 0.6rem; }
+
+input, select {
+  padding: 0.55rem 0.65rem;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 0.95rem;
+  width: 100%;
+}
+input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 0; }
+
+.btn {
+  padding: 0.6rem 1rem;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #1a1206; font-weight: 700; }
+.btn.small { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+.btn.danger { color: var(--bad); }
+
+/* ---------- lists ---------- */
+
+.clean-list, .item-list { list-style: none; margin: 0; padding: 0; }
+.clean-list li { padding: 0.4rem 0; border-bottom: 1px dashed var(--border); }
+.clean-list li:last-child { border-bottom: none; }
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.item:last-child { border-bottom: none; }
+.item .meta { color: var(--muted); font-size: 0.82rem; }
+.item.done .title { text-decoration: line-through; color: var(--muted); }
+.item.overdue .meta { color: var(--bad); }
+.item .actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  margin-right: 0.35rem;
+}
+
+/* ---------- money ---------- */
+
+.money-row { display: flex; justify-content: space-between; padding: 0.25rem 0; }
+.money-row .amt-in { color: var(--good); font-weight: 700; }
+.money-row .amt-out { color: var(--bad); font-weight: 700; }
+.money-row .amt-bal { color: var(--accent); font-weight: 800; }
+
+.progress-wrap {
+  background: var(--surface-2);
+  border-radius: 999px;
+  height: 12px;
+  overflow: hidden;
+  margin: 0.5rem 0 0.25rem;
+}
+.progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.3s ease; }
+.progress-bar.goal { background: var(--accent-2); }
+.progress-bar.over { background: var(--bad); }
+
+/* ---------- grades ---------- */
+
+.course-card .assess-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.9rem; }
+.course-card .assess-table th, .course-card .assess-table td {
+  text-align: left; padding: 0.35rem 0.3rem; border-bottom: 1px solid var(--border);
+}
+.course-card .assess-form { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 0.5rem; margin-top: 0.5rem; }
+.letter { font-weight: 800; color: var(--accent); }
+.need-box { background: var(--surface-2); border-radius: 9px; padding: 0.6rem 0.8rem; margin-top: 0.6rem; font-size: 0.9rem; }
+
+.app-footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 1rem; }
+
+@media (max-width: 560px) {
+  .app-header { flex-direction: column; align-items: flex-start; }
+  .today-date { text-align: left; }
+  .course-card .assess-form { grid-template-columns: 1fr 1fr; }
+}

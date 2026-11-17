@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duties of the Living — DTL</title>
+<meta name="description" content="DTL — one app for Canadian university student life: planner, money, grades & GPA.">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">
+    <span class="brand-icon">💀</span>
+    <div>
+      <h1>Duties of the Living</h1>
+      <p class="tagline">Your whole student life. One app.</p>
+    </div>
+  </div>
+  <p id="today-date" class="today-date"></p>
+</header>
+
+<nav class="tab-bar" role="tablist">
+  <button class="tab active" data-view="today" role="tab">🏠 Today</button>
+  <button class="tab" data-view="planner" role="tab">🗓️ Planner</button>
+  <button class="tab" data-view="money" role="tab">💰 Money</button>
+  <button class="tab" data-view="grades" role="tab">🎓 Grades</button>
+</nav>
+
+<main>
+
+  <!-- ============ TODAY ============ -->
+  <section id="view-today" class="view active">
+    <div class="card hero">
+      <h2 id="greeting">Welcome back</h2>
+      <p id="today-summary" class="muted">Loading your day…</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>⏰ Due soon</h3>
+        <ul id="due-soon" class="clean-list"></ul>
+      </div>
+      <div class="card">
+        <h3>💰 Money this month</h3>
+        <div id="money-snapshot"></div>
+      </div>
+      <div class="card">
+        <h3>🎓 Grades snapshot</h3>
+        <div id="grades-snapshot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PLANNER ============ -->
+  <section id="view-planner" class="view">
+    <div class="card">
+      <h2>Add to planner</h2>
+      <form id="planner-form" class="form-grid">
+        <label>Title
+          <input type="text" id="p-title" required placeholder="e.g. Math 204 Assignment 3">
+        </label>
+        <label>Type
+          <select id="p-type">
+            <option value="assignment">📝 Assignment</option>
+            <option value="exam">🧪 Exam</option>
+            <option value="class">🏫 Class</option>
+            <option value="task">✅ Task</option>
+          </select>
+        </label>
+        <label>Course (optional)
+          <input type="text" id="p-course" placeholder="e.g. MATH 204">
+        </label>
+        <label>Date
+          <input type="date" id="p-date" required>
+        </label>
+        <label>Time (optional)
+          <input type="time" id="p-time">
+        </label>
+        <button type="submit" class="btn primary">Add</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="row-between">
+        <h2>Your planner</h2>
+        <label class="inline-check">
+          <input type="checkbox" id="p-show-done"> Show completed
+        </label>
+      </div>
+      <ul id="planner-list" class="item-list"></ul>
+      <p id="planner-empty" class="muted">Nothing here yet. Add your first class, assignment, or exam above.</p>
+    </div>
+  </section>
+
+  <!-- ============ MONEY ============ -->
+  <section id="view-money" class="view">
+    <div class="grid">
+      <div class="card">
+        <h2>This month</h2>
+        <div id="money-summary"></div>
+        <label class="stack">Monthly budget (CAD)
+          <input type="number" id="m-budget" min="0" step="1" placeholder="e.g. 2000">
+        </label>
+        <div class="progress-wrap">
+          <div id="budget-bar" class="progress-bar"></div>
+        </div>
+        <p id="budget-note" class="muted"></p>
+      </div>
+
+      <div class="card">
+        <h2>🎯 Savings goal</h2>
+        <label class="stack">Goal name
+          <input type="text" id="m-goal-name" placeholder="e.g. Emergency fund">
+        </label>
+        <label class="stack">Target (CAD)
+          <input type="number" id="m-goal-target" min="0" step="1" placeholder="e.g. 12000">
+        </label>
+        <label class="stack">Saved so far (CAD)
+          <input type="number" id="m-goal-saved" min="0" step="1" placeholder="0">
+        </label>
+        <div class="progress-wrap">
+          <div id="goal-bar" class="progress-bar goal"></div>
+        </div>
+        <p id="goal-note" class="muted"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Add a transaction</h2>
+      <form id="money-form" class="form-grid">
+        <label>Type
+          <select id="m-type">
+            <option value="expense">💸 Expense</option>
+            <option value="income">💵 Income</option>
+          </select>
+        </label>
+        <label>Amount (CAD)
+          <input type="number" id="m-amount" min="0.01" step="0.01" required placeholder="0.00">
+        </label>
+        <label>Category
+          <select id="m-category">
+            <option>Rent / Dorm</option>
+            <option>Food</option>
+            <option>Transport</option>
+            <option>School</option>
+            <option>Fun</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label>Note (optional)
+          <input type="text" id="m-note" placeholder="e.g. Groceries">
+        </label>
+        <label>Date
+          <input type="date" id="m-date" required>
+        </label>
+        <button type="submit" class="btn primary">Add</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Transactions</h2>
+      <ul id="money-list" class="item-list"></ul>
+      <p id="money-empty" class="muted">No transactions yet this month.</p>
+    </div>
+  </section>
+
+  <!-- ============ GRADES ============ -->
+  <section id="view-grades" class="view">
+    <div class="card hero">
+      <h2>Your GPA</h2>
+      <p class="big-number" id="gpa-number">—</p>
+      <p class="muted">On Concordia's 4.3 scale, weighted by course credits. Letter grades follow the official Concordia scale.</p>
+    </div>
+
+    <div class="card">
+      <h2>Add a course</h2>
+      <form id="course-form" class="form-grid">
+        <label>Course code
+          <input type="text" id="c-code" required placeholder="e.g. MATH 204">
+        </label>
+        <label>Course name (optional)
+          <input type="text" id="c-name" placeholder="e.g. Linear Algebra">
+        </label>
+        <label>Credits
+          <input type="number" id="c-credits" min="0.5" step="0.5" value="3" required>
+        </label>
+        <button type="submit" class="btn primary">Add course</button>
+      </form>
+    </div>
+
+    <div id="course-list"></div>
+    <p id="grades-empty" class="muted card">No courses yet. Add one above, then add its graded pieces (assignments, midterms, final) with their weights.</p>
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  <p>💀 Duties of the Living (DTL) — built for Canadian university students. Your data stays on your device.</p>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
