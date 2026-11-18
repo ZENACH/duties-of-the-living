@@ -93,11 +93,11 @@ document.querySelectorAll(".tab").forEach((tab) => {
 /* ---------------- planner ---------------- */
 
 const TYPE_LABELS = {
-  assignment: "📝 Assignment",
-  exam: "🧪 Exam",
-  class: "🏫 Class",
-  deadline: "📌 Key date",
-  task: "✅ Task"
+ assignment: "Assignment",
+ exam: "Exam",
+ class: "Class",
+ deadline: "Key date",
+ task: "Task"
 };
 
 function plannerSorted() {
@@ -213,7 +213,7 @@ function renderMoney() {
   $("#money-list").innerHTML = tx.map((t) => `
     <li class="item">
       <div>
-        <span>${t.type === "income" ? "💵" : "💸"} ${esc(t.note || t.category)}</span>
+        <span>${esc(t.note || t.category)}</span>
         <div class="meta"><span class="badge">${esc(t.category)}</span>${fmtDate(t.date)}</div>
       </div>
       <div class="actions">
@@ -331,7 +331,7 @@ function renderGrades() {
     const needA = neededFor(c, 85);
     const needB = neededFor(c, 73);
     const needBox = (needA === null) ? "" : `
-      <div class="need-box">🎯 To finish with an <b>A (85%)</b> you need to average <b>${needA > 100 ? "over 100% — no longer possible" : needA.toFixed(1) + "%"}</b> on the remaining ${s.totalWeight - s.gradedWeight}% of the course.
+      <div class="need-box">To finish with an <b>A (85%)</b> you need to average <b>${needA > 100 ? "over 100% — no longer possible" : needA.toFixed(1) + "%"}</b> on the remaining ${s.totalWeight - s.gradedWeight}% of the course.
       For a <b>B (73%)</b>: <b>${needB > 100 ? "over 100% — no longer possible" : Math.max(0, needB).toFixed(1) + "%"}</b>.</div>`;
     return `<div class="card course-card">
       <div class="row-between">
@@ -403,7 +403,7 @@ function renderToday() {
   const now = new Date();
   $("#today-date").textContent = now.toLocaleDateString("en-CA", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
   const hour = now.getHours();
-  $("#greeting").textContent = hour < 12 ? "Good morning ☀️" : hour < 18 ? "Good afternoon 🌤️" : "Good evening 🌙";
+  $("#greeting").textContent = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   const upcoming = plannerSorted().filter((i) => !i.done && daysUntil(i.date) <= 7);
   const overdueCount = state.planner.filter((i) => !i.done && daysUntil(i.date) < 0).length;
@@ -416,13 +416,13 @@ function renderToday() {
 
   const aidSoon = state.aid.entries
     .filter((e) => !e.done && daysUntil(e.date) <= 7)
-    .map((e) => ({ title: e.label, date: e.date, icon: "🏛️ Aid" }));
+    .map((e) => ({ title: e.label, date: e.date, icon: "Aid" }));
   const plannerSoon = upcoming.map((i) => ({ title: i.title, date: i.date, icon: TYPE_LABELS[i.type] || "" }));
   const combined = [...plannerSoon, ...aidSoon].sort((a, b) => (a.date < b.date ? -1 : 1));
 
   $("#due-soon").innerHTML = combined.length
     ? combined.slice(0, 5).map((i) => `<li>${i.icon} <b>${esc(i.title)}</b><br><span class="muted">${fmtDate(i.date)}${daysUntil(i.date) < 0 ? " · overdue" : daysUntil(i.date) === 0 ? " · today" : " · in " + daysUntil(i.date) + "d"}</span></li>`).join("")
-    : `<li class="muted">Nothing due in the next 7 days. Enjoy the calm — or get ahead. 💀</li>`;
+    : `<li class="muted">Nothing due in the next 7 days. Enjoy the calm — or get ahead.</li>`;
 
   const docAlerts = state.documents.filter((d) => daysUntil(d.expiry) <= 90);
   $("#today-docs-card").style.display = docAlerts.length ? "block" : "none";
@@ -493,10 +493,10 @@ const PROGRAM_INFO = {
 };
 
 const AID_KIND_LABELS = {
-  payment: "💵 Payment",
-  deadline: "⏰ Deadline",
-  document: "📄 Document",
-  other: "📌 Other"
+ payment: "Payment",
+ deadline: "Deadline",
+ document: "Document",
+ other: "Other"
 };
 
 function renderAid() {
@@ -639,7 +639,7 @@ function renderTransit() {
 
   if (!times) {
     statusEl.textContent = period === "holiday"
-      ? "🎄 No shuttle service today — holiday period (Dec 24 – Jan 5). Service resumes Jan 6, 2027. Plan B: STM, below."
+      ? "No shuttle service today — holiday period (Dec 24 – Jan 5). Service resumes Jan 6, 2027. Plan B: STM, below."
       : (now.getDay() === 0 || now.getDay() === 6)
         ? "No shuttle service on weekends. Plan B: STM, below."
         : periodNames[period] + ".";
@@ -693,7 +693,7 @@ function renderDocs() {
     const s = docStatus(d.expiry);
     return `<li class="item">
       <div>
-        <span>🪪 ${esc(d.type)}${d.name ? " — " + esc(d.name) : ""}</span>
+        <span>${esc(d.type)}${d.name ? " — " + esc(d.name) : ""}</span>
         <div class="meta">Expiry: ${fmtDate(d.expiry)} · <span class="${s.cls}">${s.label}</span></div>
       </div>
       <div class="actions"><button class="btn small danger" data-doc-del="${d.id}">Delete</button></div>
@@ -725,64 +725,64 @@ $("#doc-form").addEventListener("submit", (e) => {
 /* ---------------- bilingual UI (EN / FR) ---------------- */
 
 const I18N = {
-  en: {
-    tagline: "Your whole student life. One app.",
-    nav_today: "🏠 Today", nav_planner: "🗓️ Planner", nav_money: "💰 Money", nav_grades: "🎓 Grades",
-    nav_aid: "🏛️ Aid", nav_transit: "🚌 Transit", nav_docs: "🪪 Docs", nav_study: "🎯 Study",
-    data_title: "💾 Your data",
-    data_blurb: "Everything lives on this device. Export a backup before switching phones, import it on the new one, or share the app with a friend.",
-    data_export: "⬇️ Export backup", data_import: "⬆️ Import backup", data_share: "🔗 Share DTL",
-    data_exported: "Backup exported ✓", data_imported: "Backup imported ✓ — everything is restored.",
-    data_import_error: "That file could not be imported. Make sure it is a DTL backup.",
-    data_copied: "Link copied ✓ — send it to a friend.",
-    stm_title: "📡 STM live times",
-    stm_blurb: "Live STM predictions come from STM's official GTFS-Realtime feed. It needs two things: your own free STM developer key, and a small relay so the key never sits exposed in app code. Get the key (free, about a business day) and paste it here — DTL saves it on this device only and is ready to use it the moment the relay is switched on.",
-    stm_step1: "Register at portail.developpeurs.stm.info and create an API key for the GTFS-Realtime feed.",
-    stm_step2: "Paste the key below and tap Save.",
-    stm_step3: "When the relay goes live, this card switches to real arrivals automatically.",
-    stm_key_label: "Your STM API key", stm_save: "Save key",
-    stm_saved: "Key saved on this device ✓", stm_exists: "A key is saved on this device ✓",
-    pomo_title: "🍅 Pomodoro focus timer", pomo_start: "Start", pomo_pause: "Pause", pomo_reset: "Reset",
-    pomo_sessions: "Sessions completed",
-    pomo_blurb: "25 minutes of focus, then a 5-minute break. The timer switches for you.",
-    pomo_focus: "Focus session", pomo_break: "Break — breathe",
-    fc_title: "🃏 Flashcards", fc_front: "Front (question)", fc_back: "Back (answer)", fc_add: "Add card",
-    fc_flip: "Flip", fc_shuffle: "🔀 Shuffle", fc_learning: "↩️ Still learning", fc_know: "✅ I know this",
-    fc_reset: "Reset progress", fc_delete: "Delete this card",
-    fc_empty: "No cards yet — add your first one above.", fc_tap: "Tap the card to flip it",
-    fc_progress: "{known} of {total} known"
-  },
-  fr: {
-    tagline: "Toute ta vie étudiante. Une seule appli.",
-    nav_today: "🏠 Aujourd'hui", nav_planner: "🗓️ Planificateur", nav_money: "💰 Argent", nav_grades: "🎓 Notes",
-    nav_aid: "🏛️ Aide", nav_transit: "🚌 Transport", nav_docs: "🪪 Documents", nav_study: "🎯 Étude",
-    data_title: "💾 Tes données",
-    data_blurb: "Tout est enregistré sur cet appareil. Exporte une sauvegarde avant de changer de téléphone, importe-la sur le nouveau, ou partage l'appli avec un ami.",
-    data_export: "⬇️ Exporter la sauvegarde", data_import: "⬆️ Importer la sauvegarde", data_share: "🔗 Partager DTL",
-    data_exported: "Sauvegarde exportée ✓", data_imported: "Sauvegarde importée ✓ — tout est restauré.",
-    data_import_error: "Ce fichier n'a pas pu être importé. Vérifie que c'est bien une sauvegarde DTL.",
-    data_copied: "Lien copié ✓ — envoie-le à un ami.",
-    stm_title: "📡 Heures STM en direct",
-    stm_blurb: "Les prévisions STM en direct proviennent du flux officiel GTFS-Realtime de la STM. Il faut deux choses : ta propre clé de développeur STM gratuite, et un petit relais pour que la clé ne soit jamais exposée dans le code de l'appli. Obtiens la clé (gratuite, environ un jour ouvrable) et colle-la ici — DTL l'enregistre uniquement sur cet appareil et sera prêt à l'utiliser dès que le relais sera activé.",
-    stm_step1: "Inscris-toi sur portail.developpeurs.stm.info et crée une clé API pour le flux GTFS-Realtime.",
-    stm_step2: "Colle la clé ci-dessous et touche Enregistrer.",
-    stm_step3: "Quand le relais sera en ligne, cette carte affichera les arrivées réelles automatiquement.",
-    stm_key_label: "Ta clé API STM", stm_save: "Enregistrer la clé",
-    stm_saved: "Clé enregistrée sur cet appareil ✓", stm_exists: "Une clé est enregistrée sur cet appareil ✓",
-    pomo_title: "🍅 Minuteur de concentration Pomodoro", pomo_start: "Commencer", pomo_pause: "Pause", pomo_reset: "Réinitialiser",
-    pomo_sessions: "Sessions terminées",
-    pomo_blurb: "25 minutes de concentration, puis 5 minutes de pause. Le minuteur change tout seul.",
-    pomo_focus: "Session de concentration", pomo_break: "Pause — respire",
-    fc_title: "🃏 Cartes mémoire", fc_front: "Recto (question)", fc_back: "Verso (réponse)", fc_add: "Ajouter la carte",
-    fc_flip: "Retourner", fc_shuffle: "🔀 Mélanger", fc_learning: "↩️ À retravailler", fc_know: "✅ Je le sais",
-    fc_reset: "Réinitialiser la progression", fc_delete: "Supprimer cette carte",
-    fc_empty: "Aucune carte pour l'instant — ajoute la première ci-dessus.", fc_tap: "Touche la carte pour la retourner",
-    fc_progress: "{known} sur {total} sues"
-  }
+ en: {
+ tagline: "Your whole student life. One app.",
+ nav_today: " Today", nav_planner: " Planner", nav_money: " Money", nav_grades: " Grades",
+ nav_aid: " Aid", nav_transit: " Transit", nav_docs: " Docs", nav_study: " Study",
+ data_title: " Your data",
+ data_blurb: "Everything lives on this device. Export a backup before switching phones, import it on the new one, or share the app with a friend.",
+ data_export: " Export backup", data_import: " Import backup", data_share: " Share DTL",
+ data_exported: "Backup exported ", data_imported: "Backup imported — everything is restored.",
+ data_import_error: "That file could not be imported. Make sure it is a DTL backup.",
+ data_copied: "Link copied — send it to a friend.",
+ stm_title: " STM live times",
+ stm_blurb: "Live STM predictions come from STM's official GTFS-Realtime feed. It needs two things: your own free STM developer key, and a small relay so the key never sits exposed in app code. Get the key (free, about a business day) and paste it here — DTL saves it on this device only and is ready to use it the moment the relay is switched on.",
+ stm_step1: "Register at portail.developpeurs.stm.info and create an API key for the GTFS-Realtime feed.",
+ stm_step2: "Paste the key below and tap Save.",
+ stm_step3: "When the relay goes live, this card switches to real arrivals automatically.",
+ stm_key_label: "Your STM API key", stm_save: "Save key",
+ stm_saved: "Key saved on this device ", stm_exists: "A key is saved on this device ",
+ pomo_title: " Pomodoro focus timer", pomo_start: "Start", pomo_pause: "Pause", pomo_reset: "Reset",
+ pomo_sessions: "Sessions completed",
+ pomo_blurb: "25 minutes of focus, then a 5-minute break. The timer switches for you.",
+ pomo_focus: "Focus session", pomo_break: "Break — breathe",
+ fc_title: " Flashcards", fc_front: "Front (question)", fc_back: "Back (answer)", fc_add: "Add card",
+ fc_flip: "Flip", fc_shuffle: " Shuffle", fc_learning: "↩ Still learning", fc_know: " I know this",
+ fc_reset: "Reset progress", fc_delete: "Delete this card",
+ fc_empty: "No cards yet — add your first one above.", fc_tap: "Tap the card to flip it",
+ fc_progress: "{known} of {total} known"
+ },
+ fr: {
+ tagline: "Toute ta vie étudiante. Une seule appli.",
+ nav_today: " Aujourd'hui", nav_planner: " Planificateur", nav_money: " Argent", nav_grades: " Notes",
+ nav_aid: " Aide", nav_transit: " Transport", nav_docs: " Documents", nav_study: " Étude",
+ data_title: " Tes données",
+ data_blurb: "Tout est enregistré sur cet appareil. Exporte une sauvegarde avant de changer de téléphone, importe-la sur le nouveau, ou partage l'appli avec un ami.",
+ data_export: " Exporter la sauvegarde", data_import: " Importer la sauvegarde", data_share: " Partager DTL",
+ data_exported: "Sauvegarde exportée ", data_imported: "Sauvegarde importée — tout est restauré.",
+ data_import_error: "Ce fichier n'a pas pu être importé. Vérifie que c'est bien une sauvegarde DTL.",
+ data_copied: "Lien copié — envoie-le à un ami.",
+ stm_title: " Heures STM en direct",
+ stm_blurb: "Les prévisions STM en direct proviennent du flux officiel GTFS-Realtime de la STM. Il faut deux choses : ta propre clé de développeur STM gratuite, et un petit relais pour que la clé ne soit jamais exposée dans le code de l'appli. Obtiens la clé (gratuite, environ un jour ouvrable) et colle-la ici — DTL l'enregistre uniquement sur cet appareil et sera prêt à l'utiliser dès que le relais sera activé.",
+ stm_step1: "Inscris-toi sur portail.developpeurs.stm.info et crée une clé API pour le flux GTFS-Realtime.",
+ stm_step2: "Colle la clé ci-dessous et touche Enregistrer.",
+ stm_step3: "Quand le relais sera en ligne, cette carte affichera les arrivées réelles automatiquement.",
+ stm_key_label: "Ta clé API STM", stm_save: "Enregistrer la clé",
+ stm_saved: "Clé enregistrée sur cet appareil ", stm_exists: "Une clé est enregistrée sur cet appareil ",
+ pomo_title: " Minuteur de concentration Pomodoro", pomo_start: "Commencer", pomo_pause: "Pause", pomo_reset: "Réinitialiser",
+ pomo_sessions: "Sessions terminées",
+ pomo_blurb: "25 minutes de concentration, puis 5 minutes de pause. Le minuteur change tout seul.",
+ pomo_focus: "Session de concentration", pomo_break: "Pause — respire",
+ fc_title: " Cartes mémoire", fc_front: "Recto (question)", fc_back: "Verso (réponse)", fc_add: "Ajouter la carte",
+ fc_flip: "Retourner", fc_shuffle: " Mélanger", fc_learning: "↩ À retravailler", fc_know: " Je le sais",
+ fc_reset: "Réinitialiser la progression", fc_delete: "Supprimer cette carte",
+ fc_empty: "Aucune carte pour l'instant — ajoute la première ci-dessus.", fc_tap: "Touche la carte pour la retourner",
+ fc_progress: "{known} sur {total} sues"
+ }
 };
 
 function t(key, vars) {
-  let s = (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
+  let s = ((I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key).trim();
   if (vars) for (const k in vars) s = s.replace("{" + k + "}", vars[k]);
   return s;
 }

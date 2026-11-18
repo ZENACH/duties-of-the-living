@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#0b0e1a"/>
-  <text x="50%" y="68%" font-size="300" text-anchor="middle">💀</text>
+  <rect width="512" height="512" rx="96" fill="#0F172A"/>
+  <text x="256" y="330" font-size="250" font-weight="700" fill="#FFFFFF" text-anchor="middle" font-family="Inter, system-ui, Arial, sans-serif">D</text>
+  <rect x="146" y="382" width="220" height="26" rx="13" fill="#2563EB"/>
 </svg>

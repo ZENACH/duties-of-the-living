@@ -1,6 +1,6 @@
 /* DTL service worker — network-first so updates land immediately,
    with a cache fallback so the app still opens offline. */
-const CACHE = "dtl-v3";
+const CACHE = "dtl-v4";
 const CORE = ["./", "./index.html", "./css/styles.css", "./js/app.js", "./manifest.json", "./icons/icon.svg"];
 
 self.addEventListener("install", (event) => {
