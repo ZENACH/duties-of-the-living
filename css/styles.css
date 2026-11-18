@@ -209,6 +209,27 @@ input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 0;
 a { color: var(--accent); }
 button:disabled { opacity: 0.55; cursor: default; }
 
+/* ---------- phase 3 ---------- */
+
+.header-right { display: flex; align-items: center; gap: 0.6rem; }
+.fc-stage { margin-top: 1rem; }
+.fc-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem 1.2rem;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 0.8rem;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.fc-card p:first-child { font-size: 1.15rem; font-weight: 600; margin: 0; }
+.fc-card .muted { margin: 0; }
+
 @media (max-width: 560px) {
   .app-header { flex-direction: column; align-items: flex-start; }
   .today-date { text-align: left; }

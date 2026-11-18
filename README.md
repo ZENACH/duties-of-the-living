@@ -19,12 +19,19 @@ Canadian university students already live on their phones — but their student 
 - **🚌 Transit** — the full official Concordia shuttle timetable (fall, exam-period, and winter tables, verified against concordia.ca) with next-bus countdowns for both directions, "be at the stop by" times, and arrival estimates — plus an STM plan-B card for when the shuttle isn't running.
 - **🪪 Documents** — expiry tracking for student ID, health card, study permit, passport, and more, with warnings at 90/30 days and on the Today dashboard. Expiry dates only — never card numbers.
 
+## Phase 3 (current)
+
+- **🎯 Study tools** — a Pomodoro focus timer (25-minute focus / 5-minute break, auto-switching, with a session counter) and flashcards you create yourself, with flip, shuffle, and know / still-learning tracking.
+- **🌐 Bilingual EN / FR** — one tap on the FR/EN button in the header switches the interface between English and French (Montréal-ready).
+- **💾 Your data** — export a full backup as a JSON file, import it on another device, and share DTL with a friend from the Today dashboard.
+- **📱 App polish** — installable on a phone home screen (web app manifest + icon), and a service worker keeps DTL opening even offline (network-first, so updates always land).
+- **📡 STM live times (ready, awaiting key)** — the Transit tab holds the STM key card: add your own free STM developer key and it's stored on-device, ready for the live GTFS-Realtime relay. The key never ships inside the app code.
+
 All data is stored locally in the browser (localStorage). No account, no server, no tracking.
 
 ## Roadmap
 
-- **Phase 2.5** — live STM predictions via STM's free GTFS-Realtime developer feed (needs a free STM API key and a small proxy so the key isn't exposed in client code).
-- **Phase 3** — English/French bilingual UI, study tools (Pomodoro timer, flashcards), sharing and polish.
+- **Live STM relay** — the one remaining piece: a tiny server relay that holds the STM key server-side and translates the GTFS-Realtime feed for the app. Everything on the app side is built and waiting for it.
 
 ## Run it
 

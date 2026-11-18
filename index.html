@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Duties of the Living — DTL</title>
 <meta name="description" content="DTL — one app for Canadian university student life: planner, money, grades & GPA.">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -14,20 +17,24 @@
     <span class="brand-icon">💀</span>
     <div>
       <h1>Duties of the Living</h1>
-      <p class="tagline">Your whole student life. One app.</p>
+      <p class="tagline" data-i18n="tagline">Your whole student life. One app.</p>
     </div>
   </div>
-  <p id="today-date" class="today-date"></p>
+  <div class="header-right">
+    <p id="today-date" class="today-date"></p>
+    <button id="lang-toggle" class="btn small" title="Switch language / Changer de langue">FR</button>
+  </div>
 </header>
 
 <nav class="tab-bar" role="tablist">
-  <button class="tab active" data-view="today" role="tab">🏠 Today</button>
-  <button class="tab" data-view="planner" role="tab">🗓️ Planner</button>
-  <button class="tab" data-view="money" role="tab">💰 Money</button>
-  <button class="tab" data-view="grades" role="tab">🎓 Grades</button>
-  <button class="tab" data-view="aid" role="tab">🏛️ Aid</button>
-  <button class="tab" data-view="transit" role="tab">🚌 Transit</button>
-  <button class="tab" data-view="docs" role="tab">🪪 Docs</button>
+  <button class="tab active" data-view="today" role="tab" data-i18n="nav_today">🏠 Today</button>
+  <button class="tab" data-view="planner" role="tab" data-i18n="nav_planner">🗓️ Planner</button>
+  <button class="tab" data-view="money" role="tab" data-i18n="nav_money">💰 Money</button>
+  <button class="tab" data-view="grades" role="tab" data-i18n="nav_grades">🎓 Grades</button>
+  <button class="tab" data-view="aid" role="tab" data-i18n="nav_aid">🏛️ Aid</button>
+  <button class="tab" data-view="transit" role="tab" data-i18n="nav_transit">🚌 Transit</button>
+  <button class="tab" data-view="docs" role="tab" data-i18n="nav_docs">🪪 Docs</button>
+  <button class="tab" data-view="study" role="tab" data-i18n="nav_study">🎯 Study</button>
 </nav>
 
 <main>
@@ -56,6 +63,18 @@
         <h3>🪪 Documents watch</h3>
         <div id="docs-snapshot"></div>
       </div>
+    </div>
+
+    <div class="card">
+      <h3 data-i18n="data_title">💾 Your data</h3>
+      <p class="muted" data-i18n="data_blurb">Everything lives on this device. Export a backup before switching phones, import it on the new one, or share the app with a friend.</p>
+      <div class="actions">
+        <button class="btn" id="btn-export" data-i18n="data_export">⬇️ Export backup</button>
+        <button class="btn" id="btn-import" data-i18n="data_import">⬆️ Import backup</button>
+        <input type="file" id="import-file" accept="application/json" hidden>
+        <button class="btn" id="btn-share" data-i18n="data_share">🔗 Share DTL</button>
+      </div>
+      <p id="data-status" class="muted"></p>
     </div>
   </section>
 
@@ -299,7 +318,24 @@
         <li><b>162 Westminster</b> bus — from Villa-Maria metro to Loyola</li>
         <li><b>51 Édouard-Montpetit</b> bus — from Snowdon metro to Loyola</li>
       </ul>
-      <p class="muted">Live STM times need STM's free developer key — that hookup is on the roadmap. For now, check live departures on <a href="https://www.stm.info/" target="_blank" rel="noopener">stm.info</a>. Shuttle source: <a href="https://www.concordia.ca/maps/shuttle-bus.html" target="_blank" rel="noopener">Concordia's official shuttle page</a>.</p>
+      <p class="muted">For live departures right now, check <a href="https://www.stm.info/" target="_blank" rel="noopener">stm.info</a>. Shuttle source: <a href="https://www.concordia.ca/maps/shuttle-bus.html" target="_blank" rel="noopener">Concordia's official shuttle page</a>.</p>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="stm_title">📡 STM live times</h2>
+      <p class="muted" data-i18n="stm_blurb">Live STM predictions come from STM's official GTFS-Realtime feed. It needs two things: your own free STM developer key, and a small relay so the key never sits exposed in app code. Get the key (free, about a business day) and paste it here — DTL saves it on this device only and is ready to use it the moment the relay is switched on.</p>
+      <ol class="clean-list">
+        <li data-i18n="stm_step1">Register at portail.developpeurs.stm.info and create an API key for the GTFS-Realtime feed.</li>
+        <li data-i18n="stm_step2">Paste the key below and tap Save.</li>
+        <li data-i18n="stm_step3">When the relay goes live, this card switches to real arrivals automatically.</li>
+      </ol>
+      <div class="form-grid">
+        <label><span data-i18n="stm_key_label">Your STM API key</span>
+          <input type="password" id="stm-key" placeholder="••••••••••••" autocomplete="off">
+        </label>
+        <button class="btn" id="stm-save" data-i18n="stm_save">Save key</button>
+      </div>
+      <p id="stm-status" class="muted"></p>
     </div>
   </section>
 
@@ -333,6 +369,53 @@
       <h2>Your documents</h2>
       <ul id="doc-list" class="item-list"></ul>
       <p id="doc-empty" class="muted">No documents tracked yet.</p>
+    </div>
+  </section>
+
+  <!-- ============ STUDY ============ -->
+  <section id="view-study" class="view">
+    <div class="card hero">
+      <h2 data-i18n="pomo_title">🍅 Pomodoro focus timer</h2>
+      <p class="big-number" id="pomo-display">25:00</p>
+      <p id="pomo-mode" class="muted">Focus session</p>
+      <div class="actions">
+        <button class="btn primary" id="pomo-start" data-i18n="pomo_start">Start</button>
+        <button class="btn" id="pomo-pause" data-i18n="pomo_pause">Pause</button>
+        <button class="btn" id="pomo-reset" data-i18n="pomo_reset">Reset</button>
+      </div>
+      <p class="muted"><span data-i18n="pomo_sessions">Sessions completed</span>: <b id="pomo-count">0</b></p>
+      <p class="muted" data-i18n="pomo_blurb">25 minutes of focus, then a 5-minute break. The timer switches for you.</p>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="fc_title">🃏 Flashcards</h2>
+      <form id="fc-form" class="form-grid">
+        <label><span data-i18n="fc_front">Front (question)</span>
+          <input type="text" id="fc-front-input" required placeholder="e.g. What does GPA stand for?">
+        </label>
+        <label><span data-i18n="fc_back">Back (answer)</span>
+          <input type="text" id="fc-back-input" required placeholder="e.g. Grade Point Average">
+        </label>
+        <button type="submit" class="btn primary" data-i18n="fc_add">Add card</button>
+      </form>
+
+      <div id="fc-stage" class="fc-stage">
+        <div id="fc-card" class="fc-card">
+          <p id="fc-text">No cards yet — add your first one above.</p>
+          <p class="muted" id="fc-hint">Tap the card to flip it</p>
+        </div>
+        <div class="actions">
+          <button class="btn" id="fc-flip" data-i18n="fc_flip">Flip</button>
+          <button class="btn" id="fc-shuffle" data-i18n="fc_shuffle">🔀 Shuffle</button>
+          <button class="btn" id="fc-learning" data-i18n="fc_learning">↩️ Still learning</button>
+          <button class="btn primary" id="fc-know" data-i18n="fc_know">✅ I know this</button>
+        </div>
+        <p class="muted" id="fc-progress"></p>
+        <div class="actions">
+          <button class="btn small" id="fc-reset-progress" data-i18n="fc_reset">Reset progress</button>
+          <button class="btn small danger" id="fc-delete" data-i18n="fc_delete">Delete this card</button>
+        </div>
+      </div>
     </div>
   </section>
 

@@ -17,7 +17,10 @@ const defaultState = {
   // Phase 2
   aid: { program: "AFE", entries: [] },  // entries: {id, kind, label, date, amount, done}
   documents: [],      // {id, type, name, expiry}
-  tax: { t2202: false, releve8: false, t4: false, receipts: false }
+  tax: { t2202: false, releve8: false, t4: false, receipts: false },
+  // Phase 3
+  lang: "en",
+  study: { cards: [], pomoSessions: 0 }   // cards: {id, front, back, known}
 };
 
 function loadState() {
@@ -717,6 +720,315 @@ $("#doc-form").addEventListener("submit", (e) => {
   renderAll();
 });
 
+/* ================= PHASE 3 ================= */
+
+/* ---------------- bilingual UI (EN / FR) ---------------- */
+
+const I18N = {
+  en: {
+    tagline: "Your whole student life. One app.",
+    nav_today: "🏠 Today", nav_planner: "🗓️ Planner", nav_money: "💰 Money", nav_grades: "🎓 Grades",
+    nav_aid: "🏛️ Aid", nav_transit: "🚌 Transit", nav_docs: "🪪 Docs", nav_study: "🎯 Study",
+    data_title: "💾 Your data",
+    data_blurb: "Everything lives on this device. Export a backup before switching phones, import it on the new one, or share the app with a friend.",
+    data_export: "⬇️ Export backup", data_import: "⬆️ Import backup", data_share: "🔗 Share DTL",
+    data_exported: "Backup exported ✓", data_imported: "Backup imported ✓ — everything is restored.",
+    data_import_error: "That file could not be imported. Make sure it is a DTL backup.",
+    data_copied: "Link copied ✓ — send it to a friend.",
+    stm_title: "📡 STM live times",
+    stm_blurb: "Live STM predictions come from STM's official GTFS-Realtime feed. It needs two things: your own free STM developer key, and a small relay so the key never sits exposed in app code. Get the key (free, about a business day) and paste it here — DTL saves it on this device only and is ready to use it the moment the relay is switched on.",
+    stm_step1: "Register at portail.developpeurs.stm.info and create an API key for the GTFS-Realtime feed.",
+    stm_step2: "Paste the key below and tap Save.",
+    stm_step3: "When the relay goes live, this card switches to real arrivals automatically.",
+    stm_key_label: "Your STM API key", stm_save: "Save key",
+    stm_saved: "Key saved on this device ✓", stm_exists: "A key is saved on this device ✓",
+    pomo_title: "🍅 Pomodoro focus timer", pomo_start: "Start", pomo_pause: "Pause", pomo_reset: "Reset",
+    pomo_sessions: "Sessions completed",
+    pomo_blurb: "25 minutes of focus, then a 5-minute break. The timer switches for you.",
+    pomo_focus: "Focus session", pomo_break: "Break — breathe",
+    fc_title: "🃏 Flashcards", fc_front: "Front (question)", fc_back: "Back (answer)", fc_add: "Add card",
+    fc_flip: "Flip", fc_shuffle: "🔀 Shuffle", fc_learning: "↩️ Still learning", fc_know: "✅ I know this",
+    fc_reset: "Reset progress", fc_delete: "Delete this card",
+    fc_empty: "No cards yet — add your first one above.", fc_tap: "Tap the card to flip it",
+    fc_progress: "{known} of {total} known"
+  },
+  fr: {
+    tagline: "Toute ta vie étudiante. Une seule appli.",
+    nav_today: "🏠 Aujourd'hui", nav_planner: "🗓️ Planificateur", nav_money: "💰 Argent", nav_grades: "🎓 Notes",
+    nav_aid: "🏛️ Aide", nav_transit: "🚌 Transport", nav_docs: "🪪 Documents", nav_study: "🎯 Étude",
+    data_title: "💾 Tes données",
+    data_blurb: "Tout est enregistré sur cet appareil. Exporte une sauvegarde avant de changer de téléphone, importe-la sur le nouveau, ou partage l'appli avec un ami.",
+    data_export: "⬇️ Exporter la sauvegarde", data_import: "⬆️ Importer la sauvegarde", data_share: "🔗 Partager DTL",
+    data_exported: "Sauvegarde exportée ✓", data_imported: "Sauvegarde importée ✓ — tout est restauré.",
+    data_import_error: "Ce fichier n'a pas pu être importé. Vérifie que c'est bien une sauvegarde DTL.",
+    data_copied: "Lien copié ✓ — envoie-le à un ami.",
+    stm_title: "📡 Heures STM en direct",
+    stm_blurb: "Les prévisions STM en direct proviennent du flux officiel GTFS-Realtime de la STM. Il faut deux choses : ta propre clé de développeur STM gratuite, et un petit relais pour que la clé ne soit jamais exposée dans le code de l'appli. Obtiens la clé (gratuite, environ un jour ouvrable) et colle-la ici — DTL l'enregistre uniquement sur cet appareil et sera prêt à l'utiliser dès que le relais sera activé.",
+    stm_step1: "Inscris-toi sur portail.developpeurs.stm.info et crée une clé API pour le flux GTFS-Realtime.",
+    stm_step2: "Colle la clé ci-dessous et touche Enregistrer.",
+    stm_step3: "Quand le relais sera en ligne, cette carte affichera les arrivées réelles automatiquement.",
+    stm_key_label: "Ta clé API STM", stm_save: "Enregistrer la clé",
+    stm_saved: "Clé enregistrée sur cet appareil ✓", stm_exists: "Une clé est enregistrée sur cet appareil ✓",
+    pomo_title: "🍅 Minuteur de concentration Pomodoro", pomo_start: "Commencer", pomo_pause: "Pause", pomo_reset: "Réinitialiser",
+    pomo_sessions: "Sessions terminées",
+    pomo_blurb: "25 minutes de concentration, puis 5 minutes de pause. Le minuteur change tout seul.",
+    pomo_focus: "Session de concentration", pomo_break: "Pause — respire",
+    fc_title: "🃏 Cartes mémoire", fc_front: "Recto (question)", fc_back: "Verso (réponse)", fc_add: "Ajouter la carte",
+    fc_flip: "Retourner", fc_shuffle: "🔀 Mélanger", fc_learning: "↩️ À retravailler", fc_know: "✅ Je le sais",
+    fc_reset: "Réinitialiser la progression", fc_delete: "Supprimer cette carte",
+    fc_empty: "Aucune carte pour l'instant — ajoute la première ci-dessus.", fc_tap: "Touche la carte pour la retourner",
+    fc_progress: "{known} sur {total} sues"
+  }
+};
+
+function t(key, vars) {
+  let s = (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
+  if (vars) for (const k in vars) s = s.replace("{" + k + "}", vars[k]);
+  return s;
+}
+
+function applyI18n() {
+  document.documentElement.lang = state.lang;
+  document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  const btn = $("#lang-toggle");
+  if (btn) btn.textContent = state.lang === "en" ? "FR" : "EN";
+}
+
+$("#lang-toggle").addEventListener("click", () => {
+  state.lang = state.lang === "en" ? "fr" : "en";
+  saveState();
+  renderAll();
+});
+
+/* ---------------- study: pomodoro ---------------- */
+
+const POMO_FOCUS = 25 * 60, POMO_BREAK = 5 * 60;
+let pomoMode = "focus";       // "focus" | "break"
+let pomoLeft = POMO_FOCUS;    // seconds remaining
+let pomoTimer = null;         // interval id while running
+
+function pomoDisplay() {
+  const m = Math.floor(pomoLeft / 60), s = pomoLeft % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function beep() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const osc = ctx.createOscillator();
+    osc.frequency.value = 880;
+    osc.connect(ctx.destination);
+    osc.start();
+    setTimeout(() => { osc.stop(); ctx.close(); }, 250);
+  } catch (e) { /* audio is a nicety, never an error */ }
+}
+
+function pomoTick() {
+  pomoLeft -= 1;
+  if (pomoLeft <= 0) {
+    beep();
+    if (pomoMode === "focus") {
+      state.study.pomoSessions += 1;
+      saveState();
+      pomoMode = "break";
+      pomoLeft = POMO_BREAK;
+    } else {
+      pomoMode = "focus";
+      pomoLeft = POMO_FOCUS;
+    }
+  }
+  renderStudy();
+}
+
+$("#pomo-start").addEventListener("click", () => {
+  if (pomoTimer) return;
+  pomoTimer = setInterval(pomoTick, 1000);
+});
+$("#pomo-pause").addEventListener("click", () => {
+  if (pomoTimer) { clearInterval(pomoTimer); pomoTimer = null; }
+});
+$("#pomo-reset").addEventListener("click", () => {
+  if (pomoTimer) { clearInterval(pomoTimer); pomoTimer = null; }
+  pomoMode = "focus";
+  pomoLeft = POMO_FOCUS;
+  renderStudy();
+});
+
+/* ---------------- study: flashcards ---------------- */
+
+let fcIdx = 0;
+let fcFlipped = false;
+
+function currentCard() {
+  const cards = state.study.cards;
+  if (!cards.length) return null;
+  if (fcIdx >= cards.length) fcIdx = 0;
+  return cards[fcIdx];
+}
+
+function fcAdvance() {
+  const cards = state.study.cards;
+  fcFlipped = false;
+  if (!cards.length) return;
+  // prefer the next card not yet known; wrap around if all are known
+  for (let step = 1; step <= cards.length; step++) {
+    const next = (fcIdx + step) % cards.length;
+    if (!cards[next].known) { fcIdx = next; return; }
+  }
+  fcIdx = (fcIdx + 1) % cards.length;
+}
+
+function renderStudy() {
+  // pomodoro
+  $("#pomo-display").textContent = pomoDisplay();
+  $("#pomo-mode").textContent = t(pomoMode === "focus" ? "pomo_focus" : "pomo_break");
+  $("#pomo-count").textContent = state.study.pomoSessions;
+
+  // flashcards
+  const cards = state.study.cards;
+  const card = currentCard();
+  const known = cards.filter((c) => c.known).length;
+  $("#fc-progress").textContent = cards.length ? t("fc_progress", { known, total: cards.length }) : "";
+  if (!card) {
+    $("#fc-text").textContent = t("fc_empty");
+    $("#fc-hint").textContent = "";
+    return;
+  }
+  $("#fc-text").textContent = fcFlipped ? card.back : card.front;
+  $("#fc-hint").textContent = t("fc_tap") + (card.known ? " · ✓" : "");
+}
+
+$("#fc-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  state.study.cards.push({
+    id: uid(),
+    front: $("#fc-front-input").value.trim(),
+    back: $("#fc-back-input").value.trim(),
+    known: false
+  });
+  saveState();
+  e.target.reset();
+  fcIdx = state.study.cards.length - 1;
+  fcFlipped = false;
+  renderStudy();
+});
+
+function fcFlip() { if (currentCard()) { fcFlipped = !fcFlipped; renderStudy(); } }
+$("#fc-card").addEventListener("click", fcFlip);
+$("#fc-flip").addEventListener("click", fcFlip);
+$("#fc-shuffle").addEventListener("click", () => {
+  const cards = state.study.cards;
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  fcIdx = 0; fcFlipped = false;
+  saveState(); renderStudy();
+});
+$("#fc-know").addEventListener("click", () => {
+  const card = currentCard();
+  if (!card) return;
+  card.known = true;
+  saveState(); fcAdvance(); renderStudy();
+});
+$("#fc-learning").addEventListener("click", () => {
+  const card = currentCard();
+  if (!card) return;
+  card.known = false;
+  saveState(); fcAdvance(); renderStudy();
+});
+$("#fc-reset-progress").addEventListener("click", () => {
+  state.study.cards.forEach((c) => { c.known = false; });
+  fcIdx = 0; fcFlipped = false;
+  saveState(); renderStudy();
+});
+$("#fc-delete").addEventListener("click", () => {
+  const card = currentCard();
+  if (!card) return;
+  state.study.cards = state.study.cards.filter((c) => c.id !== card.id);
+  fcFlipped = false;
+  saveState(); renderStudy();
+});
+
+/* ---------------- data tools: export / import / share ---------------- */
+
+$("#btn-export").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "dtl-backup-" + todayISO() + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+  $("#data-status").textContent = t("data_exported");
+});
+
+$("#btn-import").addEventListener("click", () => $("#import-file").click());
+
+$("#import-file").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!parsed || !Array.isArray(parsed.planner) || !Array.isArray(parsed.transactions) || !Array.isArray(parsed.courses)) {
+        throw new Error("not a DTL backup");
+      }
+      state = Object.assign(structuredClone(defaultState), parsed);
+      saveState();
+      renderAll();
+      $("#data-status").textContent = t("data_imported");
+    } catch (err) {
+      $("#data-status").textContent = t("data_import_error");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
+$("#btn-share").addEventListener("click", async () => {
+  const shareData = { title: "Duties of the Living — DTL", text: "DTL: one app for Canadian student life — planner, money, grades, aid, transit.", url: location.href };
+  try {
+    if (navigator.share) { await navigator.share(shareData); return; }
+    throw new Error("no native share");
+  } catch (err) {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      $("#data-status").textContent = t("data_copied");
+    } catch (e2) { /* clipboard unavailable — the URL in the address bar is the share link */ }
+  }
+});
+
+/* ---------------- STM live: key storage ---------------- */
+
+const STM_KEY_STORE = "dtl_stm_key";
+
+function renderStmStatus() {
+  const has = !!localStorage.getItem(STM_KEY_STORE);
+  $("#stm-status").textContent = has ? t("stm_exists") : "";
+}
+renderStmStatus();
+
+$("#stm-save").addEventListener("click", () => {
+  const v = $("#stm-key").value.trim();
+  if (v) {
+    localStorage.setItem(STM_KEY_STORE, v);
+    $("#stm-key").value = "";
+    $("#stm-status").textContent = t("stm_saved");
+  }
+});
+
+/* ---------------- offline support ---------------- */
+
+try {
+  if (typeof navigator !== "undefined" && "serviceWorker" in navigator && location.protocol.startsWith("http")) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+} catch (e) { /* offline support is progressive enhancement */ }
+
 /* ---------------- init ---------------- */
 
 function renderAll() {
@@ -726,6 +1038,8 @@ function renderAll() {
   renderAid();
   renderTransit();
   renderDocs();
+  renderStudy();
+  applyI18n();
   renderToday();
 }
 
